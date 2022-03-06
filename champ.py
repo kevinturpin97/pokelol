@@ -20,16 +20,17 @@ class Vi(Champion):
 
     def __init__(self):
         super().__init__()
-        self.init = "C'est ce que j'appelle un choix éclairé !"
+        self.init = "allons la"
     
     def get_attack(self):
         if (self.live - 10) <= 0:
-            return "Game Over"
-        else:
-            self.live -= 10
-            return "On peut y arriver."
+            print("Vi: Mort")
+            self.live = 0
+            pass
+        self.live -= 10
+        print("Vi: " + str(self.live))
     def get_null(self):
-        return "Restons positif !"
+        print("Vi: " + str(self.live))
 
 class Lux(Champion):
 
@@ -39,9 +40,11 @@ class Lux(Champion):
     
     def get_attack(self):
         if (self.live - 10) <= 0:
-            return "Game Over"
-        else:
-            self.live -= 10
-            return "On peut y arriver."
+            print("Lux: Mort")
+            self.live = 0
+            pass
+        self.live -= 10
+        print("Lux: " + str(self.live))
+
     def get_null(self):
-        return "Restons positif !"
+        print("Lux: " + str(self.live))

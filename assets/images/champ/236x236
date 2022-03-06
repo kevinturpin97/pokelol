@@ -1,27 +1,27 @@
 user = b.force
-        guest = a.magic
+guest = a.magic
 
-        if user == b.force:
-            if guest == 2:
-                b.get_attack()
-            elif guest == 1:
-                b.get_null()
-                a.get_null()
-            else:
-                a.get_attack()
-        elif user == b.shield:
-            if guest == 3:
-                b.get_attack()
-            elif guest == 2:
-                b.get_null()
-                a.get_null()
-            else:
-                a.get_attack()
-        else:
-            if guest == 1:
-                b.get_attack()
-            elif guest == 3:
-                b.get_null()
-                a.get_null()
-            else:
-                a.get_attack()
+if user == b.force:
+    if guest == 2:
+        b.get_attack()
+    elif guest == 1:
+        b.get_null()
+        a.get_null()
+    else:
+        a.get_attack()
+elif user == b.shield:
+    if guest == 3:
+        b.get_attack()
+    elif guest == 2:
+        b.get_null()
+        a.get_null()
+    else:
+        a.get_attack()
+else:
+    if guest == 1:
+        b.get_attack()
+    elif guest == 3:
+        b.get_null()
+        a.get_null()
+    else:
+        a.get_attack()
