@@ -76,6 +76,8 @@ class PokeLol:
         return text, text_rect
     
     def play(self):
+        user.live = 100
+        guest.live = 100
         txt, txt_rect = self.write_title("FIGHT", 2, 2, white, 75)
         img = pygame.image.load("assets/images/background.jpeg")
         img = pygame.transform.scale(img, (self.x, self.y))
@@ -102,10 +104,13 @@ class PokeLol:
             b2 = pygame.Rect(((self.x / 2) - 50) * 1, (self.y / 2) - 50, 100, 100)
             b3 = pygame.Rect(((self.x / 2) - 50) * 1.75, (self.y / 2) - 50, 100, 100)
 
+            if (user.live == 0) or (guest.live == 0):
+                break
+
             if b1.collidepoint(pygame.mouse.get_pos()):
                 pygame.draw.rect(self.display, color_1, b1, border_radius = 100)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    while a > 3:
+                    while ((a > 3) or (a == 0)):
                         a = floor(random.random()*10)
                     self.verification(1, a)
             else:
@@ -114,7 +119,7 @@ class PokeLol:
             if b2.collidepoint(pygame.mouse.get_pos()):
                 pygame.draw.rect(self.display, color_1, b2, border_radius = 100)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    while a > 3:
+                    while ((a > 3) or (a == 0)):
                         a = floor(random.random()*10)
                     self.verification(2, a)
             else:
@@ -123,7 +128,7 @@ class PokeLol:
             if b3.collidepoint(pygame.mouse.get_pos()):
                 pygame.draw.rect(self.display, color_1, b3, border_radius = 100)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    while a > 3:
+                    while ((a > 3) or (a == 0)):
                         a = floor(random.random()*10)
                     self.verification(3, a)
             else:
@@ -141,6 +146,13 @@ class PokeLol:
             magic_img = pygame.transform.scale(magic_img, (75, 75))
             magic_rect = magic_img.get_rect(midright=((self.x / 2) * 1.75, (self.y / 2)))
 
+            user_hp_back, user_hp = self.health_bar(10 ,(self.y / 1.5) + 20, user.live)
+            pygame.draw.rect(self.display, color_3, user_hp_back, border_radius=5)
+            pygame.draw.rect(self.display, color_4, user_hp, border_radius=5)
+
+            guest_hp_back, guest_hp = self.health_bar((self.x - 120), (236 / 2), guest.live)
+            pygame.draw.rect(self.display, color_3, guest_hp_back, border_radius=5)
+            pygame.draw.rect(self.display, color_4, guest_hp, border_radius=5)
 
             self.display.blit(force_img, force_rect)
             self.display.blit(magic_img, magic_rect)
@@ -155,10 +167,13 @@ class PokeLol:
             self.clock.tick(60)
 
             if pygame.event.get(pygame.QUIT):
-                break
-        return False
-        
-    
+                return False
+
+        if user.live == 0:
+            self.game_over()
+        elif guest.live == 0:
+            self.win()
+            
     def user_champ(self):
         img_champ = pygame.image.load("assets/images/champ/vi.png")
         img_champ = pygame.transform.scale(img_champ, ((self.x / 4), (self.y / 4)))
@@ -172,7 +187,6 @@ class PokeLol:
         return img_champ, img_rect
 
     def verification(self, user_play, guest_play):
-
         if user_play == guest_play:
             user.get_null()
             guest.get_null()
@@ -180,3 +194,82 @@ class PokeLol:
             guest.get_attack()
         else:
             user.get_attack()
+
+    def health_bar(self, x, y, heal):
+        hp_back = pygame.Rect(x, y, 100, 20)
+        hp = pygame.Rect(x, y, heal, 20)
+        return hp_back, hp
+    
+    def game_over(self):
+        while True:
+            img = pygame.image.load("assets/images/homepage.jpeg")
+            img = pygame.transform.scale(img, (self.x, self.y))
+            img_rect = img.get_rect(center=((self.x / 2), (self.y / 2)))
+            txt = pygame.font.Font("assets/fonts/SCRUBLAND.ttf", 50)
+            txt = txt.render("YOU LOOSE POOR NOOB !", True, color_0)
+            txt_rect = txt.get_rect(midtop=((self.x / 2), 0))
+            play_again, play_again_rect = self.write_title("Play again ?", 2, 2, white, 24)
+            play_again_btn = pygame.Rect((self.x / 2) - (250 / 2), (self.y / 2) - (75 / 2), 250, 75)
+            homepage_txt, homepage_txt_rect = self.write_title("Back to menu", 2, 1.5, white, 24)
+            homepage_btn = pygame.Rect((self.x / 2) - (250 / 2), (self.y / 1.5) - (75 / 2), 250, 75)
+
+            self.display.blit(img, img_rect)
+            self.display.blit(txt, txt_rect)
+
+            if play_again_btn.collidepoint(pygame.mouse.get_pos()):
+                pygame.draw.rect(self.display, color_1, play_again_btn, border_radius=100)
+                if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                    self.play()
+            else:
+                pygame.draw.rect(self.display, color_0, play_again_btn, border_radius=100)
+
+            if homepage_btn.collidepoint(pygame.mouse.get_pos()):
+                pygame.draw.rect(self.display, color_3, homepage_btn, border_radius=100)
+                if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                    self.homepage()
+            else:
+                pygame.draw.rect(self.display, color_4, homepage_btn, border_radius=100)
+                
+            self.display.blit(play_again, play_again_rect)
+            self.display.blit(homepage_txt, homepage_txt_rect)
+
+            pygame.display.update()
+            if pygame.event.get(pygame.QUIT):
+                break
+
+    def win(self):
+        while True:
+            img = pygame.image.load("assets/images/homepage.jpeg")
+            img = pygame.transform.scale(img, (self.x, self.y))
+            img_rect = img.get_rect(center=((self.x / 2), (self.y / 2)))
+            txt = pygame.font.Font("assets/fonts/SCRUBLAND.ttf", 50)
+            txt = txt.render("YOU DID IT, CHAMPION !", True, color_0)
+            txt_rect = txt.get_rect(midtop=((self.x / 2), 0))
+            play_again, play_again_rect = self.write_title("Play again ?", 2, 2, white, 24)
+            play_again_btn = pygame.Rect((self.x / 2) - (250 / 2), (self.y / 2) - (75 / 2), 250, 75)
+            homepage_txt, homepage_txt_rect = self.write_title("Back to menu", 2, 1.5, white, 24)
+            homepage_btn = pygame.Rect((self.x / 2) - (250 / 2), (self.y / 1.5) - (75 / 2), 250, 75)
+
+            self.display.blit(img, img_rect)
+            self.display.blit(txt, txt_rect)
+
+            if play_again_btn.collidepoint(pygame.mouse.get_pos()):
+                pygame.draw.rect(self.display, color_1, play_again_btn, border_radius=100)
+                if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                    self.play()
+            else:
+                pygame.draw.rect(self.display, color_0, play_again_btn, border_radius=100)
+
+            if homepage_btn.collidepoint(pygame.mouse.get_pos()):
+                pygame.draw.rect(self.display, color_3, homepage_btn, border_radius=100)
+                if pygame.event.get(pygame.MOUSEBUTTONDOWN):
+                    self.homepage()
+            else:
+                pygame.draw.rect(self.display, color_4, homepage_btn, border_radius=100)
+                
+            self.display.blit(play_again, play_again_rect)
+            self.display.blit(homepage_txt, homepage_txt_rect)
+
+            pygame.display.update()
+            if pygame.event.get(pygame.QUIT):
+                break

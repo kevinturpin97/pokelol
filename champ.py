@@ -26,9 +26,9 @@ class Vi(Champion):
         if (self.live - 10) <= 0:
             print("Vi: Mort")
             self.live = 0
-            pass
-        self.live -= 10
-        print("Vi: " + str(self.live))
+        else:
+            self.live -= 10
+            print("Vi: " + str(self.live))
     def get_null(self):
         print("Vi: " + str(self.live))
 
@@ -42,9 +42,9 @@ class Lux(Champion):
         if (self.live - 10) <= 0:
             print("Lux: Mort")
             self.live = 0
-            pass
-        self.live -= 10
-        print("Lux: " + str(self.live))
+        else:
+            self.live -= 10
+            print("Lux: " + str(self.live))
 
     def get_null(self):
         print("Lux: " + str(self.live))
