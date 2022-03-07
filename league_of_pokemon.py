@@ -78,6 +78,7 @@ class PokeLol:
     def play(self):
         user.live = 100
         guest.live = 100
+        print(user.live)
         txt, txt_rect = self.write_title("FIGHT", 2, 2, white, 75)
         img = pygame.image.load("assets/images/background.jpeg")
         img = pygame.transform.scale(img, (self.x, self.y))
@@ -87,17 +88,14 @@ class PokeLol:
         pygame.display.update()
         pygame.time.wait(1000)
 
-        self.display.blit(img, img_rect)
-        user_img, user_rect = self.user_champ()
-        guest_img, guest_rect = self.guest_champ()
-        self.display.blit(user_img, user_rect)
-        self.display.blit(guest_img, guest_rect)
-        pygame.display.update()
+        user_texte = ""
 
         while True:
-            a = 4
-            user_txt, user_txt_rect = self.write(user.init, 1.75, 1.25, black)
-            guest_txt, guest_txt_rect = self.write(guest.init, 2.5, 12.5, black)
+            self.display.blit(img, img_rect)
+            user_img, user_rect = self.user_champ()
+            guest_img, guest_rect = self.guest_champ()
+            self.display.blit(user_img, user_rect)
+            self.display.blit(guest_img, guest_rect)
             user_bg = pygame.Rect(10, 10, (self.x - user_img.get_size()[0]), 100)
             guest_bg = pygame.Rect((236 / 2) + 10, (self.y - (236 / 2)) - 10, (self.x - guest_img.get_size()[0]), 100)
             b1 = pygame.Rect(((self.x / 2) - 50) * 0.25, (self.y / 2) - 50, 100, 100)
@@ -110,29 +108,33 @@ class PokeLol:
             if b1.collidepoint(pygame.mouse.get_pos()):
                 pygame.draw.rect(self.display, color_1, b1, border_radius = 100)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    while ((a > 3) or (a == 0)):
-                        a = floor(random.random()*10)
-                    self.verification(1, a)
+                    a = random.choice([1, 2, 3])
+                    user_texte, guest_texte = self.verification(1, a)
             else:
                 pygame.draw.rect(self.display, color_0, b1, border_radius = 100)
             
             if b2.collidepoint(pygame.mouse.get_pos()):
                 pygame.draw.rect(self.display, color_1, b2, border_radius = 100)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    while ((a > 3) or (a == 0)):
-                        a = floor(random.random()*10)
-                    self.verification(2, a)
+                    a = random.choice([1, 2, 3])
+                    user_texte, guest_texte = self.verification(2, a)
             else:
                 pygame.draw.rect(self.display, color_0, b2, border_radius = 100)
             
             if b3.collidepoint(pygame.mouse.get_pos()):
                 pygame.draw.rect(self.display, color_1, b3, border_radius = 100)
                 if pygame.event.get(pygame.MOUSEBUTTONDOWN):
-                    while ((a > 3) or (a == 0)):
-                        a = floor(random.random()*10)
-                    self.verification(3, a)
+                    a = random.choice([1, 2, 3])
+                    user_texte, guest_texte = self.verification(3, a)
             else:
                 pygame.draw.rect(self.display, color_0, b3, border_radius = 100)
+            
+            if len(user_texte) != 0:
+                user_txt, user_txt_rect = self.write(str(user_texte), 1.75, 1.25, black)
+                guest_txt, guest_txt_rect = self.write(str(guest_texte), 2.5, 12.5, black)
+            else:
+                user_txt, user_txt_rect = self.write(user.init, 1.75, 1.25, black)
+                guest_txt, guest_txt_rect = self.write(guest.init, 2.5, 12.5, black)
 
             force_img = pygame.image.load("assets/images/strength.png", "Force")
             force_img = pygame.transform.scale(force_img, (75, 75))
@@ -175,7 +177,7 @@ class PokeLol:
             self.win()
             
     def user_champ(self):
-        img_champ = pygame.image.load("assets/images/champ/vi.png")
+        img_champ = pygame.image.load("assets/images/champ/lux.png")
         img_champ = pygame.transform.scale(img_champ, ((self.x / 4), (self.y / 4)))
         img_rect = img_champ.get_rect(bottomleft=(0, self.y))
         return img_champ, img_rect
@@ -188,12 +190,11 @@ class PokeLol:
 
     def verification(self, user_play, guest_play):
         if user_play == guest_play:
-            user.get_null()
-            guest.get_null()
+            return user.get_null(), guest.get_null()
         elif (user_play, guest_play) in ((3, 1), (2, 3), (1, 2)):
-            guest.get_attack()
+            return user.get_defend(), guest.get_attack()
         else:
-            user.get_attack()
+            return user.get_attack(), guest.get_defend()
 
     def health_bar(self, x, y, heal):
         hp_back = pygame.Rect(x, y, 100, 20)
@@ -235,7 +236,7 @@ class PokeLol:
 
             pygame.display.update()
             if pygame.event.get(pygame.QUIT):
-                break
+                return False
 
     def win(self):
         while True:
@@ -272,4 +273,4 @@ class PokeLol:
 
             pygame.display.update()
             if pygame.event.get(pygame.QUIT):
-                break
+                return False
